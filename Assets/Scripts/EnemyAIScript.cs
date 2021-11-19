@@ -72,7 +72,7 @@ public class EnemyAIScript : MonoBehaviour
         }
 
         //OnDrawGizmosSelected();
-        Debug.Log(walkPoint);
+        //Debug.Log(walkPoint);
     }
 
     bool CanSeePlayer()
