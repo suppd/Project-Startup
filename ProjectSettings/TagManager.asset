@@ -11,11 +11,11 @@ TagManager:
   - Player
   - Water
   - UI
+  - Obstacles
   - Ground
   - 
-  - PostProcessing
-  - Not in Reflection
-  - Obstacles
+  - 
+  - 
   - 
   - 
   - 
