@@ -11,12 +11,16 @@ public class EnemyAIScript : MonoBehaviour
     public Transform player;
 
     public LayerMask groundMask, playerMask;
+    public GameObject healthBar;
+    public HealthBar healthBarScript;
+
 
 
     //Spotting
     public Light spotlight;
     public float viewDistance;
     public LayerMask viewMask;
+    [SerializeField] [Range(0f,1f)] float lerpSpeed;
     float viewAngle;
 
     //Patrolling
@@ -40,6 +44,7 @@ public class EnemyAIScript : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         viewAngle = spotlight.spotAngle;
         originalSpotlightColour = spotlight.color;
+        
     }
 
     private void Update()
@@ -48,23 +53,23 @@ public class EnemyAIScript : MonoBehaviour
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, playerMask);
         playerInSight = Physics.CheckSphere(transform.position, sightRange, playerMask);
 
-        if (!playerInAttackRange && !playerInSight)
+        if (!playerInAttackRange && !CanSeePlayer())
         {
             Patrolling();
+            StopAllCoroutines();
+            lerpSpeed = 0f;
+            agent.speed = 4f;
+            spotlight.color = originalSpotlightColour;
         }
-        else if (!playerInAttackRange && playerInSight)
+        else if (!playerInAttackRange && CanSeePlayer())
         {
-            //ChasePlayer();
+            
+            StartCoroutine(WaitDetection());
         }
-        else if (playerInAttackRange && playerInSight)
+        else if (playerInAttackRange && CanSeePlayer())
         {
+            //spotlight.color = Color.Lerp(originalSpotlightColour,Color.red, 1);
             AttackPlayer();
-        }
-
-        if (CanSeePlayer())
-        {
-            spotlight.color = Color.red;
-            ChasePlayer();
         }
         else
         {
@@ -127,8 +132,15 @@ public class EnemyAIScript : MonoBehaviour
 
     private void ChasePlayer()
     {
+        transform.LookAt(player);
+        agent.speed = 14f;
         agent.SetDestination(player.position);
 
+        if (playerInAttackRange)
+        {
+            healthBarScript.TakeDamage(50);
+        }
+        
     }
 
     private void AttackPlayer()
@@ -136,7 +148,6 @@ public class EnemyAIScript : MonoBehaviour
         agent.SetDestination(transform.position);
 
         transform.LookAt(player);
-
         if (!alreadyAttacked)
         {
             //put attack code here:
@@ -150,6 +161,19 @@ public class EnemyAIScript : MonoBehaviour
     private void ResetAttack()
     {
         alreadyAttacked = false;
+    }
+
+    private IEnumerator WaitDetection()
+    {
+        lerpSpeed += 0.001f;
+        spotlight.color = Color.Lerp(originalSpotlightColour, Color.red, lerpSpeed);
+        yield return new WaitForSeconds(1f);
+        ChasePlayer();
+
+    }
+
+    public void DealDamage(int damage)
+    {
     }
 
     public void TakeDamage(int damage)
