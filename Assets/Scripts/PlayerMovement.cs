@@ -121,14 +121,16 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 move = transform.right * x + transform.forward * z;
 
-        velocity += characterMomentumVelocity;
 
         controller.Move(move * speed * Time.deltaTime);
+
+        velocity += characterMomentumVelocity;
 
         if (jumpPressed && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
+
         
         velocity.y += gravity * Time.deltaTime;
 
@@ -136,9 +138,11 @@ public class PlayerMovement : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
 
+
+
         if (characterMomentumVelocity.magnitude >= 0f)
         {
-            float momentumDrag = 20f;
+            float momentumDrag = 100f;
             characterMomentumVelocity -= characterMomentumVelocity * momentumDrag * Time.deltaTime;
             if (characterMomentumVelocity.magnitude < .0f)
             {
@@ -154,6 +158,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleHookshotStart()
     {
+
         if (InputDownHookshot())
         {  
             debugHitPointTransform.position = cursorPos.transform.position;
@@ -176,6 +181,7 @@ public class PlayerMovement : MonoBehaviour
         if (hookshotSize >= Vector3.Distance(transform.position, hookshotPosition))
         {
             state = State.HookshotFlying;
+
         }
     }
 
@@ -184,7 +190,7 @@ public class PlayerMovement : MonoBehaviour
         state = State.Normal;
         ResetGravity();
         hookshotTransform.gameObject.SetActive(false);
-        characterMomentumVelocity = Vector3.zero;
+        //characterMomentumVelocity = Vector3.zero;
     }
 
     private void HandleHookshotMovement()
@@ -219,6 +225,7 @@ public class PlayerMovement : MonoBehaviour
             float momentumExtraSpeed = 1f;
             characterMomentumVelocity = hookshotDir * hookshotSpeed * momentumExtraSpeed;
             StopHookshot();
+            
         }
     }
     
