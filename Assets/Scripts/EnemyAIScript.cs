@@ -151,7 +151,7 @@ public class EnemyAIScript : MonoBehaviour
         if (!alreadyAttacked)
         {
             //put attack code here:
-
+/////////
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
