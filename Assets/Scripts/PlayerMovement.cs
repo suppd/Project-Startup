@@ -85,10 +85,11 @@ public class PlayerMovement : MonoBehaviour
 
         //isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
        
-        {
+
         if (controller.isGrounded)
-            if (jumpPressed)
+        {
             characterVelocityY = 0f;
+            if (jumpPressed)
             {
                 float jumpSpeed = 20;
                 characterVelocityY = jumpSpeed;
