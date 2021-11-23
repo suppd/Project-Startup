@@ -90,6 +90,7 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
+        //Debug.Log(characterMomentumVelocity.magnitude);
 
         //Debug.Log(isGrounded);
         //Debug.Log(velocity.y);
