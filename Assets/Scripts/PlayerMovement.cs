@@ -84,11 +84,11 @@ public class PlayerMovement : MonoBehaviour
         Vector3 characterVelocity = transform.right * x * speed + transform.forward * z * speed;
 
         //isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
-        if (controller.isGrounded)
+       
         {
-            characterVelocityY = 0f;
+        if (controller.isGrounded)
             if (jumpPressed)
+            characterVelocityY = 0f;
             {
                 float jumpSpeed = 20;
                 characterVelocityY = jumpSpeed;
@@ -100,12 +100,12 @@ public class PlayerMovement : MonoBehaviour
 
         //apply y vector to move vector
         characterVelocity.y = characterVelocityY;
-
         //apply momentum
+
         characterVelocity += characterMomentumVelocity;
 
-        controller.Move(characterVelocity * Time.deltaTime);
 
+        controller.Move(characterVelocity * Time.deltaTime);
         //damp momentum 
 
         if (characterMomentumVelocity.magnitude >= 0f)
@@ -117,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
                 characterMomentumVelocity = Vector3.zero;
             }
         }
-
+   
     }
 
     private void ResetGravity()
@@ -189,7 +189,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-
             float momentumExtraSpeed = 7f;
             characterMomentumVelocity = hookshotDir * hookshotSpeed * momentumExtraSpeed;
             float jumpSpeed = 20;
