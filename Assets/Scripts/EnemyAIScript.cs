@@ -10,7 +10,7 @@ public class EnemyAIScript : MonoBehaviour
 
     public Transform player;
 
-    public LayerMask groundMask, playerMask, obstacleMask;
+    public LayerMask groundMask, playerMask;
     public GameObject healthBar;
     public HealthBar healthBarScript;
 
@@ -105,15 +105,7 @@ public class EnemyAIScript : MonoBehaviour
         }
         if (walkPointSet)
         {
-            
-            if (!Physics.CheckSphere(walkPoint, 1f, obstacleMask))
-            {
-                agent.SetDestination(walkPoint);
-            }
-            else
-            {
-                walkPointSet = false;
-            }
+            agent.SetDestination(walkPoint);
         }
 
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
@@ -132,10 +124,6 @@ public class EnemyAIScript : MonoBehaviour
 
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.y + randomZ);
 
-        if (agent.velocity.x <=0)
-        {
-            walkPointSet = false;
-        }
         if (Physics.Raycast(walkPoint, -transform.up, 2f, groundMask))
         {
             walkPointSet = true;
@@ -163,7 +151,7 @@ public class EnemyAIScript : MonoBehaviour
         if (!alreadyAttacked)
         {
             //put attack code here:
-
+/////////
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
