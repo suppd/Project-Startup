@@ -168,7 +168,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 71461878}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1.81
+  m_Radius: 1.05
   m_Speed: 4
   m_Acceleration: 8
   avoidancePriority: 50
@@ -201,6 +201,9 @@ MonoBehaviour:
   playerMask:
     serializedVersion: 2
     m_Bits: 8
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 64
   healthBar: {fileID: 933887355}
   healthBarScript: {fileID: 933887360}
   spotlight: {fileID: 1496077799}

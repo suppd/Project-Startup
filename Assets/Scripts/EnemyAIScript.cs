@@ -105,6 +105,7 @@ public class EnemyAIScript : MonoBehaviour
         }
         if (walkPointSet)
         {
+            
             if (!Physics.CheckSphere(walkPoint, 1f, obstacleMask))
             {
                 agent.SetDestination(walkPoint);
@@ -139,7 +140,6 @@ public class EnemyAIScript : MonoBehaviour
         {
             walkPointSet = true;
         }
-
     }
 
     private void ChasePlayer()
@@ -163,7 +163,7 @@ public class EnemyAIScript : MonoBehaviour
         if (!alreadyAttacked)
         {
             //put attack code here:
-////
+
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
