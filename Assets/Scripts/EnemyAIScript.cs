@@ -10,7 +10,7 @@ public class EnemyAIScript : MonoBehaviour
 
     public Transform player;
 
-    public LayerMask groundMask, playerMask;
+    public LayerMask groundMask, playerMask, obstacleMask;
     public GameObject healthBar;
     public HealthBar healthBarScript;
 
@@ -104,8 +104,12 @@ public class EnemyAIScript : MonoBehaviour
             SearchWalkPoint();
         }
         if (walkPointSet)
-        {
-            agent.SetDestination(walkPoint);
+        {   if (!Physics.CheckSphere(walkPoint, 1f, obstacleMask))
+            { agent.SetDestination(walkPoint); }
+        else
+            {
+                walkPointSet = false;
+            }
         }
 
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
