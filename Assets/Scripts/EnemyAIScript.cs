@@ -16,6 +16,7 @@ public class EnemyAIScript : MonoBehaviour
 
     public bool randomPatrolling = false;
     public bool isFlyingType = false;
+    public BoxCollider boxCollider;
 
 
     //Chasiing
@@ -37,6 +38,9 @@ public class EnemyAIScript : MonoBehaviour
     public float walkPointMinRange;
     public float turnSpeed = 90;
     public float waitTime = .3f;
+
+
+
 
     //Attacking
     public float timeBetweenAttacks;
@@ -99,7 +103,7 @@ public class EnemyAIScript : MonoBehaviour
         }
         else if (!playerInAttackRange && CanSeePlayer())
         {
-            Debug.Log("seeingplayer");
+            //Debug.Log("seeingplayer");
             StartCoroutine(WaitDetection());
         }
         else if (playerInAttackRange && CanSeePlayer())
@@ -226,10 +230,18 @@ public class EnemyAIScript : MonoBehaviour
 
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
-  
-        if (Physics.Raycast(walkPoint, -transform.up, 2f, groundMask))
+
+        if (walkPoint.x > boxCollider.bounds.min.x && walkPoint.x < boxCollider.bounds.max.x &&
+            walkPoint.z > boxCollider.bounds.min.z && walkPoint.z < boxCollider.bounds.max.z)
         {
-            walkPointSet = true;
+
+
+            Debug.Log("WalkPoint is inside");
+            if (Physics.Raycast(walkPoint, -transform.up, 2f, groundMask))
+            {
+                walkPointSet = true;
+
+            }
         }
     }
 
@@ -276,6 +288,21 @@ public class EnemyAIScript : MonoBehaviour
 
     }
 
+    static bool IsInsideBounds(Vector3 worldPos, BoxCollider bc)
+    {
+        Vector3 localPos = bc.transform.InverseTransformPoint(worldPos);
+        Vector3 delta = localPos - bc.center + bc.size * 0.5f;
+        if (Vector3.Max(Vector3.zero, delta) == Vector3.Min(delta, bc.size))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+
     public void DealDamage(int damage)
     {
     }
@@ -299,6 +326,9 @@ public class EnemyAIScript : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, player.position * viewDistance);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, walkPointRange);
     }
 
 }

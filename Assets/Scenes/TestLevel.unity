@@ -801,12 +801,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 933887355}
     - target: {fileID: 5806249246668486882, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
+      propertyPath: boxCollider
+      value: 
+      objectReference: {fileID: 1491663711}
+    - target: {fileID: 5806249246668486882, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
       propertyPath: isFlyingType
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5806249246668486882, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
       propertyPath: viewDistance
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806249246668486882, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
+      propertyPath: walkPointRange
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5806249246668486882, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
       propertyPath: healthBarScript
@@ -824,9 +832,13 @@ PrefabInstance:
       propertyPath: groundMask.m_Bits
       value: 512
       objectReference: {fileID: 0}
+    - target: {fileID: 5806249246668486882, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
+      propertyPath: walkPointMinRange
+      value: -2
+      objectReference: {fileID: 0}
     - target: {fileID: 5806249246668486883, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
       propertyPath: m_AutoRepath
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5806249246668486883, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
       propertyPath: m_AgentTypeID
@@ -838,7 +850,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5806249246668486883, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
       propertyPath: m_AutoTraverseOffMeshLink
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7849657637818924769, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
       propertyPath: m_RootOrder
@@ -850,7 +862,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7849657637818924769, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 10.99
+      value: 11.9
       objectReference: {fileID: 0}
     - target: {fileID: 7849657637818924769, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2379,7 +2391,7 @@ MeshCollider:
   m_GameObject: {fileID: 1476779338}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
@@ -2442,6 +2454,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1491663710}
+  - component: {fileID: 1491663711}
   m_Layer: 9
   m_Name: Drone Planes
   m_TagString: Untagged
@@ -2464,6 +2477,19 @@ Transform:
   m_Father: {fileID: 1728675075}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1491663711
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491663709}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 21.35351, y: 1, z: 18.351341}
+  m_Center: {x: 0.81296825, y: 0, z: 0.41748238}
 --- !u!1 &1501181853
 GameObject:
   m_ObjectHideFlags: 0
@@ -3249,7 +3275,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.33333334
+  m_VoxelSize: 0.16666667
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 23800000, guid: 60d7947ab580107439697f8224d166b8, type: 2}
 --- !u!4 &1728675075
