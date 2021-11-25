@@ -13,8 +13,13 @@ TagManager:
   - UI
   - Obstacles
   - Ground
+<<<<<<< HEAD
   - Waypoints
   - Air
+=======
+  - Air
+  - 
+>>>>>>> Designer
   - 
   - 
   - 
