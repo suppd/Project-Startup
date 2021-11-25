@@ -239,7 +239,7 @@ MonoBehaviour:
   player: {fileID: 0}
   groundMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 512
   playerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -248,11 +248,12 @@ MonoBehaviour:
     m_Bits: 64
   healthBar: {fileID: 0}
   healthBarScript: {fileID: 0}
-  randomPatrolling: 0
+  randomPatrolling: 1
   isFlyingType: 1
+  boxCollider: {fileID: 0}
   agentSpeed: 12
   spotlight: {fileID: 5806249245516482300}
-  viewDistance: 8.25
+  viewDistance: 100
   viewMask:
     serializedVersion: 2
     m_Bits: 64
@@ -275,7 +276,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5806249246668486893}
   m_Enabled: 1
-  m_AgentTypeID: 0
+  m_AgentTypeID: -1372625422
   m_Radius: 1.05
   m_Speed: 4
   m_Acceleration: 8

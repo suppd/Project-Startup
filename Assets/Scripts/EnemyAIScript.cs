@@ -225,8 +225,24 @@ public class EnemyAIScript : MonoBehaviour
 
     private void SearchWalkPoint()
     {
-        float randomZ = Random.Range(walkPointMinRange, walkPointRange);
-        float randomX = Random.Range(walkPointMinRange, walkPointRange);
+        float randomZ = Random.Range(-walkPointRange, walkPointRange);
+        float randomX = Random.Range(-walkPointRange, walkPointRange);
+        if (randomZ < 0 && randomZ > -walkPointMinRange)
+        {
+            randomZ = -walkPointMinRange - 1;
+        }
+        if (randomZ < walkPointMinRange && randomZ > 0)
+        {
+            randomZ = walkPointMinRange + 1;
+        }
+        if (randomX < 0 && randomX > -walkPointMinRange)
+        {
+            randomX = -walkPointMinRange - 1;
+        }
+        if (randomX < walkPointMinRange && randomX > 0)
+        {
+            randomX = -walkPointMinRange - 1;
+        }
 
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
