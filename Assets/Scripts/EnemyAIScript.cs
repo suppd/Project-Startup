@@ -176,6 +176,7 @@ public class EnemyAIScript : MonoBehaviour
             }
             yield return null;
         }
+<<<<<<< HEAD
     }
     IEnumerator TurnToFace(Vector3 lookTarget)
     {
@@ -209,6 +210,14 @@ public class EnemyAIScript : MonoBehaviour
                 {
                     walkPointSet = false;
                 }
+=======
+        if (walkPointSet)
+        {   if (!Physics.CheckSphere(walkPoint, 1f, obstacleMask))
+            { agent.SetDestination(walkPoint); }
+        else
+            {
+                walkPointSet = false;
+>>>>>>> Designer
             }
 
             Vector3 distanceToWalkPoint = transform.position - walkPoint;
@@ -230,9 +239,13 @@ public class EnemyAIScript : MonoBehaviour
 
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
+<<<<<<< HEAD
 
         if (walkPoint.x > boxCollider.bounds.min.x && walkPoint.x < boxCollider.bounds.max.x &&
             walkPoint.z > boxCollider.bounds.min.z && walkPoint.z < boxCollider.bounds.max.z)
+=======
+        if (Physics.Raycast(walkPoint, -transform.up, 2f, groundMask))
+>>>>>>> Designer
         {
 
 
@@ -269,7 +282,7 @@ public class EnemyAIScript : MonoBehaviour
         if (!alreadyAttacked)
         {
             //put attack code here:
-
+/////////
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
