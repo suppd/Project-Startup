@@ -15,6 +15,7 @@ public class EnemyAIScript : MonoBehaviour
     public HealthBar healthBarScript;
 
     public bool randomPatrolling = false;
+    public bool isFlyingType = false;
 
 
     //Chasiing
@@ -29,11 +30,11 @@ public class EnemyAIScript : MonoBehaviour
 
     //Patrolling
     public Vector3 walkPoint;
-    bool walkPointSet;
+    bool walkPointSet = false;
     public float walkPointRange;
     private int waypointIndex;
     private float dist;
-    public float walkPointMinRange = 5f;
+    public float walkPointMinRange;
     public float turnSpeed = 90;
     public float waitTime = .3f;
 
@@ -55,35 +56,50 @@ public class EnemyAIScript : MonoBehaviour
         originalSpotlightColour = spotlight.color;
         waypointIndex = 0;
 
-        Vector3[] waypoints = new Vector3[waypointsHolder.childCount];
-        for (int i = 0; i < waypoints.Length; i++)
+        if (!isFlyingType)
         {
-            waypoints[i] = waypointsHolder.GetChild(i).position;
-            //waypoints[i] = new Vector3(waypoints[i].x, transform.position.y, waypoints[i].z);
+            if (randomPatrolling)
+            {
+                Vector3[] waypoints = new Vector3[waypointsHolder.childCount];
+                for (int i = 0; i < waypoints.Length; i++)
+                {
+                    waypoints[i] = waypointsHolder.GetChild(i).position;
+                    //waypoints[i] = new Vector3(waypoints[i].x, transform.position.y, waypoints[i].z);
+                }
+
+                StartCoroutine(FollowPath(waypoints));
+            }
         }
-
-        StartCoroutine(FollowPath(waypoints));
-
     }
 
     private void Update()
     {
         //check attack and sight range
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, playerMask);
-
+    
         if (!playerInAttackRange && !CanSeePlayer())
         {
-            //Patrolling();
-            //PatrolWaypoints();
-            //StopAllCoroutines();
-            StopCoroutine(WaitDetection());
-            //lerpSpeed = 0f;
-            //agent.speed = 4f;
-            spotlight.color = originalSpotlightColour;
+            if (!isFlyingType)
+            {
+                //Patrolling();
+                //PatrolWaypoints();
+                //StopAllCoroutines();
+                StopCoroutine(WaitDetection());
+                //lerpSpeed = 0f;
+                //agent.speed = 4f;
+                spotlight.color = originalSpotlightColour;
+            }
+            else if (isFlyingType)
+            {
+                StopAllCoroutines();
+                Patrolling();
+                StopCoroutine(WaitDetection());
+                spotlight.color = originalSpotlightColour;
+            }
         }
         else if (!playerInAttackRange && CanSeePlayer())
         {
-            
+            Debug.Log("seeingplayer");
             StartCoroutine(WaitDetection());
         }
         else if (playerInAttackRange && CanSeePlayer())
@@ -103,15 +119,31 @@ public class EnemyAIScript : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, player.position) < viewDistance)
         {
-            Vector3 dirToPlayer = (player.position - transform.position).normalized;
-            float angleBetweenGuardAndPlayer = Vector3.Angle(transform.forward, dirToPlayer);
-            if (angleBetweenGuardAndPlayer < viewAngle / 2f)
+            if (!isFlyingType)
             {
-                if (!Physics.Linecast(transform.position, player.position, viewMask))
+                Vector3 dirToPlayer = (player.position - transform.position).normalized;
+                float angleBetweenGuardAndPlayer = Vector3.Angle(transform.forward, dirToPlayer);
+                if (angleBetweenGuardAndPlayer < viewAngle / 2f)
                 {
-                    return true;
+                    if (!Physics.Linecast(transform.position, player.position, viewMask))
+                    {
+                        return true;
+                    }
                 }
             }
+            if (isFlyingType)
+            {
+                Vector3 dirToPlayer = (player.position - transform.position).normalized;
+                float angleBetweenGuardAndPlayer = Vector3.Angle(-transform.up, dirToPlayer);
+                if (angleBetweenGuardAndPlayer < viewAngle / 2f)
+                {
+                    if (!Physics.Linecast(transform.position, player.position, viewMask))
+                    {
+                        return true;
+                    }
+                }
+            }
+
         }
         return false;
     }
@@ -130,7 +162,7 @@ public class EnemyAIScript : MonoBehaviour
             //agent.SetDestination(targetWaypoint);
             agent.destination = targetWaypoint;
             Vector3 oldnewPositionDiffrence = targetWaypoint - agent.transform.position;
-            Debug.Log(oldnewPositionDiffrence.magnitude);
+            //Debug.Log(oldnewPositionDiffrence.magnitude);
             if (oldnewPositionDiffrence.magnitude <0.2f)
             {
                 targetWaypointIndex = (targetWaypointIndex + 1) % waypoints.Length;
@@ -153,20 +185,6 @@ public class EnemyAIScript : MonoBehaviour
             yield return null;
         }
     }
-
-    //private void PatrolWaypoints()
-    //{
-    //    if (!randomPatrolling)
-    //    {
-    //        dist = Vector3.Distance(transform.position, waypoints[waypointIndex].position);
-    //        if (dist < 1f)
-    //        {
-    //            IncreaseIndex();
-    //        }
-    //        Vector3 targetLocation = waypoints[waypointIndex].position;
-    //        agent.SetDestination(targetLocation);
-    //    }
-    //}
 
     private void Patrolling()
     {
@@ -206,12 +224,9 @@ public class EnemyAIScript : MonoBehaviour
         float randomZ = Random.Range(walkPointMinRange, walkPointRange);
         float randomX = Random.Range(walkPointMinRange, walkPointRange);
 
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.y + randomZ);
+        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
-        if (agent.velocity.x <=0)
-        {
-            walkPointSet = false;
-        }
+  
         if (Physics.Raycast(walkPoint, -transform.up, 2f, groundMask))
         {
             walkPointSet = true;
@@ -220,7 +235,10 @@ public class EnemyAIScript : MonoBehaviour
 
     private void ChasePlayer()
     {
-        transform.LookAt(player);
+        if (!isFlyingType)
+        {
+            transform.LookAt(player);
+        }
         agent.speed = agentSpeed;
         agent.SetDestination(player.position);
 
@@ -244,18 +262,6 @@ public class EnemyAIScript : MonoBehaviour
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
-
-    //private void IncreaseIndex()
-    //{
-    //    waypointIndex++;
-
-    //    if (waypointIndex >= waypoints.Length)
-    //    {
-    //        waypointIndex = 0;
-    //    }
-        
-    //    transform.LookAt(waypoints[waypointIndex].position);
-    //}
     private void ResetAttack()
     {
         alreadyAttacked = false;
@@ -292,7 +298,7 @@ public class EnemyAIScript : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, sightRange);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, transform.forward * viewDistance);
+        Gizmos.DrawRay(transform.position, player.position * viewDistance);
     }
 
 }
