@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyAIScript : MonoBehaviour
 {
-
+    
     public NavMeshAgent agent;
     public Transform waypointsHolder;
     public Transform player;
@@ -17,6 +17,7 @@ public class EnemyAIScript : MonoBehaviour
     public bool randomPatrolling = false;
     public bool isFlyingType = false;
     public BoxCollider boxCollider;
+    public int randomSeed;
 
 
     //Chasiing
@@ -54,6 +55,7 @@ public class EnemyAIScript : MonoBehaviour
 
     private void Start()
     {
+        Random.InitState(randomSeed);
         player = GameObject.Find("PlayerModel").transform;
         agent = GetComponent<NavMeshAgent>();
         viewAngle = spotlight.spotAngle;
@@ -101,7 +103,10 @@ public class EnemyAIScript : MonoBehaviour
             else if (isFlyingType)
             {
                 StopAllCoroutines();
-                Patrolling();
+                if (IsStuck())
+                {
+                    Patrolling();
+                }
                 StopCoroutine(WaitDetection());
                 spotlight.color = originalSpotlightColour;
             }
@@ -166,6 +171,7 @@ public class EnemyAIScript : MonoBehaviour
 
         while (true)
         {
+            
             //transform.position = Vector3.MoveTowards(transform.position, targetWaypoint, agentSpeed * Time.deltaTime);
             //agent.SetDestination(targetWaypoint);
             agent.destination = targetWaypoint;
@@ -225,7 +231,24 @@ public class EnemyAIScript : MonoBehaviour
         }
     }
 
+    private bool IsStuck()
+    {
+        float timer = 1;
+        timer++;
 
+        if (timer >= 1)
+        {
+            float remainingDistanceOverTime = agent.remainingDistance;
+            if (agent.remainingDistance == remainingDistanceOverTime)
+            {
+                timer = 0;
+                return true;
+                
+            }
+        }
+
+        return false;
+    }
 
     private void SearchWalkPoint()
     {
