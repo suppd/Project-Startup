@@ -152,7 +152,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5806249246668486893}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -259,8 +259,8 @@ MonoBehaviour:
     m_Bits: 64
   lerpSpeed: 0.712
   walkPoint: {x: 0, y: 0, z: 0}
-  walkPointRange: 5
-  walkPointMinRange: 0
+  walkPointRange: 10
+  walkPointMinRange: 4
   turnSpeed: 90
   waitTime: 0.3
   timeBetweenAttacks: 0
@@ -278,8 +278,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -1372625422
   m_Radius: 1.05
-  m_Speed: 4
-  m_Acceleration: 8
+  m_Speed: 6
+  m_Acceleration: 9
   avoidancePriority: 50
   m_AngularSpeed: 60
   m_StoppingDistance: 0

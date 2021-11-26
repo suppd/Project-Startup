@@ -341,7 +341,7 @@ public class EnemyAIScript : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, sightRange);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, player.position * viewDistance);
+        Gizmos.DrawRay(transform.position, transform.forward * viewDistance);
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, walkPointRange);
