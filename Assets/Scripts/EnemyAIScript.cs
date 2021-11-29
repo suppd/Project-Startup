@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyAIScript : MonoBehaviour
 {
-
+    public Transform RaycastOrigin;
     public NavMeshAgent agent;
     public Transform waypointsHolder;
     public Transform player;
@@ -17,6 +17,7 @@ public class EnemyAIScript : MonoBehaviour
     public bool randomPatrolling = false;
     public bool isFlyingType = false;
     public BoxCollider boxCollider;
+    public int randomSeed;
 
 
     //Chasiing
@@ -24,6 +25,7 @@ public class EnemyAIScript : MonoBehaviour
 
     //Spotting
     public Light spotlight;
+    public Transform spotlightTransform;
     public float viewDistance;
     public LayerMask viewMask;
     [SerializeField] [Range(0f,1f)] float lerpSpeed;
@@ -54,15 +56,15 @@ public class EnemyAIScript : MonoBehaviour
 
     private void Start()
     {
+        Random.InitState(randomSeed);
         player = GameObject.Find("PlayerModel").transform;
         agent = GetComponent<NavMeshAgent>();
         viewAngle = spotlight.spotAngle;
         originalSpotlightColour = spotlight.color;
         waypointIndex = 0;
 
-        if (!isFlyingType)
-        {
-            if (randomPatrolling)
+        
+            if (!randomPatrolling)
             {
                 Vector3[] waypoints = new Vector3[waypointsHolder.childCount];
                 for (int i = 0; i < waypoints.Length; i++)
@@ -73,7 +75,7 @@ public class EnemyAIScript : MonoBehaviour
 
                 StartCoroutine(FollowPath(waypoints));
             }
-        }
+        
     }
 
     private void Update()
@@ -83,9 +85,14 @@ public class EnemyAIScript : MonoBehaviour
     
         if (!playerInAttackRange && !CanSeePlayer())
         {
-            if (!isFlyingType)
+            if (!isFlyingType && !randomPatrolling)
             {
-                //Patrolling();
+                StopCoroutine(WaitDetection());
+                spotlight.color = originalSpotlightColour;
+            }
+            if (!isFlyingType && randomPatrolling)
+            {
+                Patrolling();
                 //PatrolWaypoints();
                 //StopAllCoroutines();
                 StopCoroutine(WaitDetection());
@@ -95,15 +102,18 @@ public class EnemyAIScript : MonoBehaviour
             }
             else if (isFlyingType)
             {
-                StopAllCoroutines();
-                Patrolling();
-                StopCoroutine(WaitDetection());
+                //StopAllCoroutines();
+                ////if (!IsStuck())
+                
+                //Patrolling();
+                
+                //StopCoroutine(WaitDetection());
                 spotlight.color = originalSpotlightColour;
+
             }
         }
         else if (!playerInAttackRange && CanSeePlayer())
         {
-            //Debug.Log("seeingplayer");
             StartCoroutine(WaitDetection());
         }
         else if (playerInAttackRange && CanSeePlayer())
@@ -138,7 +148,7 @@ public class EnemyAIScript : MonoBehaviour
             if (isFlyingType)
             {
                 Vector3 dirToPlayer = (player.position - transform.position).normalized;
-                float angleBetweenGuardAndPlayer = Vector3.Angle(-transform.up, dirToPlayer);
+                float angleBetweenGuardAndPlayer = Vector3.Angle(spotlightTransform.forward, dirToPlayer);
                 if (angleBetweenGuardAndPlayer < viewAngle / 2f)
                 {
                     if (!Physics.Linecast(transform.position, player.position, viewMask))
@@ -162,12 +172,13 @@ public class EnemyAIScript : MonoBehaviour
 
         while (true)
         {
+            
             //transform.position = Vector3.MoveTowards(transform.position, targetWaypoint, agentSpeed * Time.deltaTime);
             //agent.SetDestination(targetWaypoint);
             agent.destination = targetWaypoint;
             Vector3 oldnewPositionDiffrence = targetWaypoint - agent.transform.position;
             //Debug.Log(oldnewPositionDiffrence.magnitude);
-            if (oldnewPositionDiffrence.magnitude <0.2f)
+            if (oldnewPositionDiffrence.magnitude <0.5f)
             {
                 targetWaypointIndex = (targetWaypointIndex + 1) % waypoints.Length;
                 targetWaypoint = waypoints[targetWaypointIndex];
@@ -221,28 +232,29 @@ public class EnemyAIScript : MonoBehaviour
         }
     }
 
+    private bool IsStuck()
+    {
+        float timer = 1;
+        timer++;
 
+        if (timer >= 1)
+        {
+            float remainingDistanceOverTime = agent.remainingDistance;
+            if (agent.remainingDistance == remainingDistanceOverTime)
+            {
+                timer = 0;
+                return true;
+                
+            }
+        }
+
+        return false;
+    }
 
     private void SearchWalkPoint()
     {
-        float randomZ = Random.Range(-walkPointRange, walkPointRange);
-        float randomX = Random.Range(-walkPointRange, walkPointRange);
-        if (randomZ < 0 && randomZ > -walkPointMinRange)
-        {
-            randomZ = -walkPointMinRange - 1;
-        }
-        if (randomZ < walkPointMinRange && randomZ > 0)
-        {
-            randomZ = walkPointMinRange + 1;
-        }
-        if (randomX < 0 && randomX > -walkPointMinRange)
-        {
-            randomX = -walkPointMinRange - 1;
-        }
-        if (randomX < walkPointMinRange && randomX > 0)
-        {
-            randomX = -walkPointMinRange - 1;
-        }
+        float randomZ = Random.Range(-walkPointMinRange, walkPointRange);
+        float randomX = Random.Range(-walkPointMinRange, walkPointRange);
 
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
@@ -252,7 +264,7 @@ public class EnemyAIScript : MonoBehaviour
         {
 
 
-            Debug.Log("WalkPoint is inside");
+            //Debug.Log("WalkPoint is inside");
             if (Physics.Raycast(walkPoint, -transform.up, 2f, groundMask))
             {
                 walkPointSet = true;
@@ -261,6 +273,14 @@ public class EnemyAIScript : MonoBehaviour
         }
     }
 
+    private void StopPatrollingAndLook()
+    {
+        if (!isFlyingType)
+        {
+            transform.LookAt(player);
+        }
+        agent.speed = 0;
+    }
     private void ChasePlayer()
     {
         if (!isFlyingType)
@@ -270,11 +290,7 @@ public class EnemyAIScript : MonoBehaviour
         agent.speed = agentSpeed;
         agent.SetDestination(player.position);
 
-        if (playerInAttackRange)
-        {
-            healthBarScript.TakeDamage(50);
-        }
-        
+   
     }
 
     private void AttackPlayer()
@@ -284,9 +300,14 @@ public class EnemyAIScript : MonoBehaviour
         transform.LookAt(player);
         if (!alreadyAttacked)
         {
-            //put attack code here:
-/////////
-            alreadyAttacked = true;
+            if (playerInAttackRange)
+            {
+                healthBarScript.TakeDamage(2);
+                alreadyAttacked = true;
+            }
+
+
+            
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
@@ -297,26 +318,12 @@ public class EnemyAIScript : MonoBehaviour
 
     private IEnumerator WaitDetection()
     {
+        StopPatrollingAndLook();
         lerpSpeed += 0.001f;
         spotlight.color = Color.Lerp(originalSpotlightColour, Color.red, lerpSpeed);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.3f);
         ChasePlayer();
 
-    }
-
-    static bool IsInsideBounds(Vector3 worldPos, BoxCollider bc)
-    {
-        Vector3 localPos = bc.transform.InverseTransformPoint(worldPos);
-        Vector3 delta = localPos - bc.center + bc.size * 0.5f;
-        if (Vector3.Max(Vector3.zero, delta) == Vector3.Min(delta, bc.size))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-        
     }
 
     public void DealDamage(int damage)
@@ -341,10 +348,10 @@ public class EnemyAIScript : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, sightRange);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, transform.forward * viewDistance);
+        Gizmos.DrawRay(transform.position,transform.forward * viewDistance);
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, walkPointRange);
+        //Gizmos.color = Color.yellow;
+        //Gizmos.DrawWireSphere(transform.position, walkPointRange);
     }
 
 }
