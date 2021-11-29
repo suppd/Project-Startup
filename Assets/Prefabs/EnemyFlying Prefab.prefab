@@ -218,7 +218,7 @@ BoxCollider:
   m_GameObject: {fileID: 5806249246668486893}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -234,6 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a56ed7ccb9848c48b848a5ad4ad1383, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RaycastOrigin: {fileID: 0}
   agent: {fileID: 5806249246668486883}
   waypointsHolder: {fileID: 0}
   player: {fileID: 0}
@@ -251,8 +252,10 @@ MonoBehaviour:
   randomPatrolling: 1
   isFlyingType: 1
   boxCollider: {fileID: 0}
+  randomSeed: 0
   agentSpeed: 12
   spotlight: {fileID: 5806249245516482300}
+  spotlightTransform: {fileID: 0}
   viewDistance: 100
   viewMask:
     serializedVersion: 2
