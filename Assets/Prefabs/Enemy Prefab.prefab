@@ -51,6 +51,10 @@ PrefabInstance:
       propertyPath: waypointsHolder
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5806249246668486882, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
+      propertyPath: randomPatrolling
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5806249246668486883, guid: 2906b04cb8e3d7f4eabc58abd6d9ebfa, type: 3}
       propertyPath: m_Speed
       value: 7
