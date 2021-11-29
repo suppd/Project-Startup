@@ -26,9 +26,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 hookshotPosition;
     private Vector3 characterMomentumVelocity;
     private float hookshotSize;
-    private float characterVelocityY;
 
-
+   
     Vector3 velocity;
     bool isGrounded;
     Vector2 mousePos;
@@ -41,12 +40,39 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Awake()
     {
-        state = State.Normal;
         hookshotTransform.gameObject.SetActive(false);
     }
 
+#if ENABLE_INPUT_SYSTEM
+    InputAction movement;
+    InputAction jump;
+
+    void Start()
+    {
+        movement = new InputAction("PlayerMovement", binding: "<Gamepad>/leftStick");
+        movement.AddCompositeBinding("Dpad")
+            .With("Up", "<Keyboard>/w")
+            .With("Up", "<Keyboard>/upArrow")
+            .With("Down", "<Keyboard>/s")
+            .With("Down", "<Keyboard>/downArrow")
+            .With("Left", "<Keyboard>/a")
+            .With("Left", "<Keyboard>/leftArrow")
+            .With("Right", "<Keyboard>/d")
+            .With("Right", "<Keyboard>/rightArrow");
+        
+        jump = new InputAction("PlayerJump", binding: "<Gamepad>/a");
+        jump.AddBinding("<Keyboard>/space");
+
+        movement.Enable();
+        jump.Enable();
+    }
+#endif
+
+    // Update is called once per frame
     void Update()
     {
+       
+       
         switch (state)
         {
             default:
@@ -64,10 +90,9 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
-        //Debug.Log(characterMomentumVelocity.magnitude);
 
         //Debug.Log(isGrounded);
-        //Debug.Log(characterMomentumVelocity);
+        //Debug.Log(velocity.y);
     }
 
     private void HandleCharacterMovement()
@@ -76,61 +101,66 @@ public class PlayerMovement : MonoBehaviour
         float z;
         bool jumpPressed = false;
 
-
-        x = Input.GetAxisRaw("Horizontal");
-        z = Input.GetAxisRaw("Vertical");
+#if ENABLE_INPUT_SYSTEM
+        var delta = movement.ReadValue<Vector2>();
+        x = delta.x;
+        z = delta.y;
+        jumpPressed = Mathf.Approximately(jump.ReadValue<float>(), 1);
+#else
+        x = Input.GetAxis("Horizontal");
+        z = Input.GetAxis("Vertical");
         jumpPressed = Input.GetButtonDown("Jump");
+#endif
 
-        Vector3 characterVelocity = transform.right * x * speed + transform.forward * z * speed;
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        //isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-       
-
-        if (controller.isGrounded)
+        if (isGrounded && velocity.y < 0)
         {
-            characterVelocityY = 0f;
-            if (jumpPressed)
-            {
-                float jumpSpeed = 20;
-                characterVelocityY = jumpSpeed;
-            }
+            velocity.y = -2f;
         }
-        //apply gravity
-        float gravityDownForce = -60f;
-        characterVelocityY += gravityDownForce * Time.deltaTime;
 
-        //apply y vector to move vector
-        characterVelocity.y = characterVelocityY;
-        //apply momentum
-
-        characterVelocity += characterMomentumVelocity;
+        Vector3 move = transform.right * x + transform.forward * z;
 
 
-        controller.Move(characterVelocity * Time.deltaTime);
-        //damp momentum 
+        controller.Move(move * speed * Time.deltaTime);
+
+        velocity += characterMomentumVelocity;
+
+        if (jumpPressed && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+
+        
+        velocity.y += gravity * Time.deltaTime;
+
+        
+
+        controller.Move(velocity * Time.deltaTime);
+
+
 
         if (characterMomentumVelocity.magnitude >= 0f)
         {
-            float momentumDrag = 6;
+            float momentumDrag = 100f;
             characterMomentumVelocity -= characterMomentumVelocity * momentumDrag * Time.deltaTime;
             if (characterMomentumVelocity.magnitude < .0f)
             {
                 characterMomentumVelocity = Vector3.zero;
             }
         }
-   
     }
 
     private void ResetGravity()
     {
-        characterVelocityY = 0f;
+        velocity.y = -2f;
     }
 
     private void HandleHookshotStart()
     {
 
         if (InputDownHookshot())
-        {
+        {  
             debugHitPointTransform.position = cursorPos.transform.position;
             hookshotPosition = cursorPos.transform.position;
             hookshotSize = 0f;
@@ -144,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
     {
         hookshotTransform.LookAt(hookshotPosition);
 
-        float hookshotThrowSpeed = 100f;
+        float hookshotThrowSpeed = 40f;
         hookshotSize += hookshotThrowSpeed * Time.deltaTime;
         hookshotTransform.localScale = new Vector3(1, 1, hookshotSize);
 
@@ -160,6 +190,7 @@ public class PlayerMovement : MonoBehaviour
         state = State.Normal;
         ResetGravity();
         hookshotTransform.gameObject.SetActive(false);
+        //characterMomentumVelocity = Vector3.zero;
     }
 
     private void HandleHookshotMovement()
@@ -170,14 +201,14 @@ public class PlayerMovement : MonoBehaviour
         float hookshotSpeedMin = 10f;
         float hookshotSpeedMax = 20f;
         float hookshotSpeed = Mathf.Clamp(Vector3.Distance(transform.position, hookshotPosition), hookshotSpeedMin, hookshotSpeedMax);
-        float hookshotSpeedMultiplier = 3f;
+        float hookshotSpeedMultiplier = 2f;
 
         controller.Move(hookshotDir * hookshotSpeed * hookshotSpeedMultiplier * Time.deltaTime);
 
         hookshotSize -= hookshotSpeed * hookshotSpeedMultiplier * Time.deltaTime;
         hookshotTransform.localScale = new Vector3(1, 1, hookshotSize);
 
-        float reachedHookshotPos = 1.0f;
+        float reachedHookshotPos = 1.5f;
         if (Vector3.Distance(transform.position, hookshotPosition) < reachedHookshotPos)
         {
             StopHookshot();
@@ -190,15 +221,14 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            float momentumExtraSpeed = 7f;
+            
+            float momentumExtraSpeed = 1f;
             characterMomentumVelocity = hookshotDir * hookshotSpeed * momentumExtraSpeed;
-            float jumpSpeed = 20;
-            characterMomentumVelocity += Vector3.up * jumpSpeed;
             StopHookshot();
-
+            
         }
     }
-
+    
     private bool InputDownHookshot()
     {
         return Input.GetKeyDown(KeyCode.E);
