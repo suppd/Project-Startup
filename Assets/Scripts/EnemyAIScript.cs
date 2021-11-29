@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyAIScript : MonoBehaviour
 {
-    
+    public Transform RaycastOrigin;
     public NavMeshAgent agent;
     public Transform waypointsHolder;
     public Transform player;
@@ -25,6 +25,7 @@ public class EnemyAIScript : MonoBehaviour
 
     //Spotting
     public Light spotlight;
+    public Transform spotlightTransform;
     public float viewDistance;
     public LayerMask viewMask;
     [SerializeField] [Range(0f,1f)] float lerpSpeed;
@@ -62,8 +63,7 @@ public class EnemyAIScript : MonoBehaviour
         originalSpotlightColour = spotlight.color;
         waypointIndex = 0;
 
-        if (!isFlyingType)
-        {
+        
             if (!randomPatrolling)
             {
                 Vector3[] waypoints = new Vector3[waypointsHolder.childCount];
@@ -75,7 +75,7 @@ public class EnemyAIScript : MonoBehaviour
 
                 StartCoroutine(FollowPath(waypoints));
             }
-        }
+        
     }
 
     private void Update()
@@ -102,13 +102,14 @@ public class EnemyAIScript : MonoBehaviour
             }
             else if (isFlyingType)
             {
-                StopAllCoroutines();
-                if (IsStuck())
-                {
-                    Patrolling();
-                }
-                StopCoroutine(WaitDetection());
+                //StopAllCoroutines();
+                ////if (!IsStuck())
+                
+                //Patrolling();
+                
+                //StopCoroutine(WaitDetection());
                 spotlight.color = originalSpotlightColour;
+
             }
         }
         else if (!playerInAttackRange && CanSeePlayer())
@@ -147,7 +148,7 @@ public class EnemyAIScript : MonoBehaviour
             if (isFlyingType)
             {
                 Vector3 dirToPlayer = (player.position - transform.position).normalized;
-                float angleBetweenGuardAndPlayer = Vector3.Angle(-transform.up, dirToPlayer);
+                float angleBetweenGuardAndPlayer = Vector3.Angle(spotlightTransform.forward, dirToPlayer);
                 if (angleBetweenGuardAndPlayer < viewAngle / 2f)
                 {
                     if (!Physics.Linecast(transform.position, player.position, viewMask))
@@ -177,7 +178,7 @@ public class EnemyAIScript : MonoBehaviour
             agent.destination = targetWaypoint;
             Vector3 oldnewPositionDiffrence = targetWaypoint - agent.transform.position;
             //Debug.Log(oldnewPositionDiffrence.magnitude);
-            if (oldnewPositionDiffrence.magnitude <0.2f)
+            if (oldnewPositionDiffrence.magnitude <0.5f)
             {
                 targetWaypointIndex = (targetWaypointIndex + 1) % waypoints.Length;
                 targetWaypoint = waypoints[targetWaypointIndex];
