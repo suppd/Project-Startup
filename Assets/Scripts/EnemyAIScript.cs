@@ -57,7 +57,7 @@ public class EnemyAIScript : MonoBehaviour
     private void Start()
     {
         Random.InitState(randomSeed);
-        player = GameObject.Find("PlayerModel").transform;
+        player = GameObject.Find("Sprite player").transform;
         agent = GetComponent<NavMeshAgent>();
         viewAngle = spotlight.spotAngle;
         originalSpotlightColour = spotlight.color;
