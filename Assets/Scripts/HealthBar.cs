@@ -28,10 +28,10 @@ public class HealthBar : MonoBehaviour
         {
             SceneManager.LoadScene("Level layout");
         }
-        TakeDamageOverTime(1);
+        TakeDamageOverTime(0.1f);
     }
 
-    public void TakeDamageOverTime(int damage)
+    public void TakeDamageOverTime(float damage)
     {
         if (health > 0)
         {
@@ -53,7 +53,7 @@ public class HealthBar : MonoBehaviour
         }
     }
 
-    public float TakeDamage(int damage)
+    public float TakeDamage(float damage)
     {
         return health -= damage;
     }
