@@ -11,7 +11,10 @@ public class PlayerMovement : MonoBehaviour
 
     public CharacterController controller;
     public Transform cursorPos;
+    public HealthBar healtbar;
+    
 
+    public float oxygenConsumption = 1;
     public float speed = 12f;
     public float gravity = -50f;
     public float jumpHeight = 2f;
@@ -137,6 +140,7 @@ public class PlayerMovement : MonoBehaviour
             hookshotTransform.gameObject.SetActive(true);
             hookshotTransform.localScale = Vector3.zero;
             state = State.HookshotThrown;
+            healtbar.TakeDamage(oxygenConsumption);
         }
     }
 
@@ -177,7 +181,7 @@ public class PlayerMovement : MonoBehaviour
         hookshotSize -= hookshotSpeed * hookshotSpeedMultiplier * Time.deltaTime;
         hookshotTransform.localScale = new Vector3(1, 1, hookshotSize);
 
-        float reachedHookshotPos = 1.0f;
+        float reachedHookshotPos = 1.5f;
         if (Vector3.Distance(transform.position, hookshotPosition) < reachedHookshotPos)
         {
             StopHookshot();

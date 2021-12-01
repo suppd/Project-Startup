@@ -26,7 +26,7 @@ public class SpriteAnimationScript : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(CheckWhichKeysArePressed());
+        //Debug.Log(CheckWhichKeysArePressed());
         if (CheckWhichKeysArePressed() == 1)
         {
             PlaySpriteAnimation(1);

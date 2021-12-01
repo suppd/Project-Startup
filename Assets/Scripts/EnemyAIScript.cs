@@ -19,6 +19,10 @@ public class EnemyAIScript : MonoBehaviour
     public BoxCollider boxCollider;
     public int randomSeed;
 
+    //Audio
+    public AudioSource stunSource;
+    public AudioClip stunClip;
+
 
     //Chasiing
     public float agentSpeed = 12;
@@ -28,6 +32,8 @@ public class EnemyAIScript : MonoBehaviour
     public Transform spotlightTransform;
     public float viewDistance;
     public LayerMask viewMask;
+    public float detectionTimer = 1;
+    float originalDetectionTimer;
     [SerializeField] [Range(0f,1f)] float lerpSpeed;
     float viewAngle;
 
@@ -61,6 +67,7 @@ public class EnemyAIScript : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         viewAngle = spotlight.spotAngle;
         originalSpotlightColour = spotlight.color;
+        originalDetectionTimer = detectionTimer;
         waypointIndex = 0;
 
         
@@ -112,17 +119,20 @@ public class EnemyAIScript : MonoBehaviour
 
             }
         }
-        else if (!playerInAttackRange && CanSeePlayer())
+        else if (!playerInAttackRange && CanSeePlayer() && isFlyingType)
         {
             StartCoroutine(WaitDetection());
+            AttackPlayer();
         }
-        else if (playerInAttackRange && CanSeePlayer())
+        else if (!isFlyingType && CanSeePlayer() && playerInAttackRange)
         {
             //spotlight.color = Color.Lerp(originalSpotlightColour,Color.red, 1);
+            StartCoroutine(WaitDetection());
             AttackPlayer();
         }
         else
         {
+            detectionTimer = originalDetectionTimer;
             spotlight.color = originalSpotlightColour;
         }
 
@@ -297,18 +307,33 @@ public class EnemyAIScript : MonoBehaviour
     {
         agent.SetDestination(transform.position);
 
-        transform.LookAt(player);
+        if (!isFlyingType)
+        {
+            transform.LookAt(player);
+        }
         if (!alreadyAttacked)
         {
+            Debug.Log(detectionTimer);
             if (playerInAttackRange)
             {
-                healthBarScript.TakeDamage(2);
+                healthBarScript.TakeDamage(15);
                 alreadyAttacked = true;
             }
+            if (isFlyingType && detectionTimer <= 0)
+            {
+                healthBarScript.TakeDamage(25);
+                stunSource.PlayOneShot(stunClip);
+                alreadyAttacked = true;
+                
+                Debug.Log("stun");
 
+            }
 
-            
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
+        }
+        else if (!isFlyingType)
+        {
+            StopPatrollingAndLook();
         }
     }
     private void ResetAttack()
@@ -322,7 +347,9 @@ public class EnemyAIScript : MonoBehaviour
         lerpSpeed += 0.001f;
         spotlight.color = Color.Lerp(originalSpotlightColour, Color.red, lerpSpeed);
         yield return new WaitForSeconds(0.3f);
+        detectionTimer--;
         ChasePlayer();
+        
 
     }
 
@@ -348,7 +375,7 @@ public class EnemyAIScript : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, sightRange);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position,transform.forward * viewDistance);
+        Gizmos.DrawRay(transform.position,-transform.up * viewDistance);
 
         //Gizmos.color = Color.yellow;
         //Gizmos.DrawWireSphere(transform.position, walkPointRange);
