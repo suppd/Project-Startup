@@ -21,27 +21,34 @@ public class SpriteAnimationScript : MonoBehaviour
     void Start()
     {
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        currentFrame = 0;
     }
 
 
     void Update()
     {
+        
+        
+        if (currentFrame >= frameArray.Length)
+        {
+            currentFrame = 0;
+        }
         //Debug.Log(CheckWhichKeysArePressed());
         if (CheckWhichKeysArePressed() == 1)
         {
-            PlaySpriteAnimation(1);
+            PlaySpriteAnimation(currentFrame);
         }
         else if (CheckWhichKeysArePressed() == 2) 
         {
-            PlaySpriteAnimation(2);
+            PlaySpriteAnimation(currentFrame);
         }
         else if (CheckWhichKeysArePressed() == 3)
         {
-            PlaySpriteAnimation(3);
+            PlaySpriteAnimation(currentFrame);
         }
         else if (CheckWhichKeysArePressed() == 4)
         {
-            PlaySpriteAnimation(4);
+            PlaySpriteAnimation(currentFrame);
         }
     }
 
@@ -53,7 +60,7 @@ public class SpriteAnimationScript : MonoBehaviour
         {
             timer -= frameRate;
             currentFrame = frame;
-            spriteRenderer.sprite = frameArray[0];
+            spriteRenderer.sprite = frameArray[frame];
 
         }
     }

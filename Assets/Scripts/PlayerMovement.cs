@@ -12,7 +12,9 @@ public class PlayerMovement : MonoBehaviour
     public CharacterController controller;
     public Transform cursorPos;
     public HealthBar healtbar;
-    
+    public SpriteRenderer charachterSprite;
+
+    public Animator animator;
 
     public float oxygenConsumption = 1;
     public float speed = 12f;
@@ -46,10 +48,13 @@ public class PlayerMovement : MonoBehaviour
     {
         state = State.Normal;
         hookshotTransform.gameObject.SetActive(false);
+        
     }
 
     void Update()
     {
+        Debug.Log(controller.velocity.magnitude);
+        IsRunning();
         switch (state)
         {
             default:
@@ -75,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleCharacterMovement()
     {
+
         float x;
         float z;
         bool jumpPressed = false;
@@ -121,7 +127,21 @@ public class PlayerMovement : MonoBehaviour
                 characterMomentumVelocity = Vector3.zero;
             }
         }
-   
+
+        //Vector3 characterScale = charachterSprite.transform.localScale;
+        //if (Input.GetKey(KeyCode.A))
+        //{
+        //    characterScale.x =- charachterSprite.transform.localScale.x;
+        //}
+        //else
+        //{
+        //    characterScale.x =+charachterSprite.transform.localScale.x;
+        //}
+        //transform.localScale = characterScale;
+
+       
+
+
     }
 
     private void ResetGravity()
@@ -208,6 +228,19 @@ public class PlayerMovement : MonoBehaviour
         return Input.GetKeyDown(KeyCode.E);
     }
 
+    public bool IsRunning()
+    {
+        if (controller.velocity.magnitude > 0)
+        {
+            animator.SetBool("Is running", true);
+            return true;
+        }
+        else
+        {
+            animator.SetBool("Is running", false);
+        }
+        return false;
+    }
 
 
     private void OnDrawGizmosSelected()
