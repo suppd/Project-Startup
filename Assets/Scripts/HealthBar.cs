@@ -14,6 +14,7 @@ public class HealthBar : MonoBehaviour
     float timer = 0;
     public bool takenDamage;
     public float maxTime = 2;
+    public float damage = 0.1f;
     void Start()
     {
         health = 100;
@@ -28,7 +29,7 @@ public class HealthBar : MonoBehaviour
         {
             SceneManager.LoadScene("Level layout");
         }
-        TakeDamageOverTime(0.1f);
+        TakeDamageOverTime(damage);
     }
 
     public void TakeDamageOverTime(float damage)
