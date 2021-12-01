@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 6401244852679459791}
   - component: {fileID: 8032752481061489770}
   - component: {fileID: 5232873372867508384}
+  - component: {fileID: 8013198099391732264}
+  - component: {fileID: 1092310733905976774}
+  - component: {fileID: 8563559314269683962}
   m_Layer: 0
   m_Name: Roof_Walkable_Angled
   m_TagString: Untagged
@@ -81,3 +84,42 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8013198099391732264
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6025282950888790389}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.3292017, y: 1.9544201, z: 3.9044924}
+  m_Center: {x: -0.04624319, y: 0, z: 1.2108483}
+--- !u!65 &1092310733905976774
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6025282950888790389}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.992527, y: 1.9544201, z: 1.2667904}
+  m_Center: {x: -0.3826599, y: 0, z: -1.3544436}
+--- !u!65 &8563559314269683962
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6025282950888790389}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.5142937, y: 1.9544201, z: 1.4704399}
+  m_Center: {x: -0.600626, y: 0, z: -2.7023125}

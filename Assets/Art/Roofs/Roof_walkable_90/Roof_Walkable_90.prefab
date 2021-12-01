@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3461381276551179704}
   - component: {fileID: 551286865761296925}
   - component: {fileID: 2324533822678013655}
+  - component: {fileID: 4759152138053581440}
+  - component: {fileID: 715704180080473727}
   m_Layer: 0
   m_Name: Roof_Walkable_90
   m_TagString: Untagged
@@ -81,3 +83,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4759152138053581440
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4270146104868550402}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 6.4156313, y: 1.9544201, z: 3.1839972}
+  m_Center: {x: -1.589457, y: 0, z: -1.571094}
+--- !u!65 &715704180080473727
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4270146104868550402}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.2231903, y: 1.9544201, z: 3.1837015}
+  m_Center: {x: 0.0067634583, y: 0, z: 1.5712438}
