@@ -70,7 +70,6 @@ public class EnemyAIScript : MonoBehaviour
         originalDetectionTimer = detectionTimer;
         waypointIndex = 0;
 
-        
             if (!randomPatrolling)
             {
                 Vector3[] waypoints = new Vector3[waypointsHolder.childCount];
@@ -124,11 +123,14 @@ public class EnemyAIScript : MonoBehaviour
             StartCoroutine(WaitDetection());
             AttackPlayer();
         }
-        else if (!isFlyingType && CanSeePlayer() && playerInAttackRange)
+        else if (!isFlyingType && CanSeePlayer())
         {
             //spotlight.color = Color.Lerp(originalSpotlightColour,Color.red, 1);
             StartCoroutine(WaitDetection());
-            AttackPlayer();
+            if (playerInAttackRange)
+            {
+                AttackPlayer();
+            }
         }
         else
         {
@@ -305,35 +307,38 @@ public class EnemyAIScript : MonoBehaviour
 
     private void AttackPlayer()
     {
-        agent.SetDestination(transform.position);
+        if (CanSeePlayer())
+        {
+            agent.SetDestination(transform.position);
 
-        if (!isFlyingType)
-        {
-            transform.LookAt(player);
-        }
-        if (!alreadyAttacked)
-        {
-            Debug.Log(detectionTimer);
-            if (playerInAttackRange)
+            if (!isFlyingType)
             {
-                healthBarScript.TakeDamage(15);
-                alreadyAttacked = true;
+                transform.LookAt(player);
             }
-            if (isFlyingType && detectionTimer <= 0)
+            if (!alreadyAttacked)
             {
-                healthBarScript.TakeDamage(25);
-                stunSource.PlayOneShot(stunClip);
-                alreadyAttacked = true;
-                
-                Debug.Log("stun");
+                Debug.Log(detectionTimer);
+                if (playerInAttackRange)
+                {
+                    healthBarScript.TakeDamage(15);
+                    alreadyAttacked = true;
+                }
+                if (isFlyingType && detectionTimer <= 0)
+                {
+                    healthBarScript.TakeDamage(25);
+                    stunSource.PlayOneShot(stunClip);
+                    alreadyAttacked = true;
 
+                    Debug.Log("stun");
+
+                }
+
+                Invoke(nameof(ResetAttack), timeBetweenAttacks);
             }
-
-            Invoke(nameof(ResetAttack), timeBetweenAttacks);
-        }
-        else if (!isFlyingType)
-        {
-            StopPatrollingAndLook();
+            else if (!isFlyingType)
+            {
+                StopPatrollingAndLook();
+            }
         }
     }
     private void ResetAttack()
@@ -375,7 +380,7 @@ public class EnemyAIScript : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, sightRange);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position,-transform.up * viewDistance);
+        Gizmos.DrawRay(transform.position,transform.forward * viewDistance);
 
         //Gizmos.color = Color.yellow;
         //Gizmos.DrawWireSphere(transform.position, walkPointRange);
