@@ -4862,4 +4862,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5228783fc9ec2374bb12e62efa6bf580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drain: 0.1
+  drain: 0.07
