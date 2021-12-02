@@ -38,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     Vector3 velocity;
+    Vector3 currentRotation;
     bool isGrounded;
     bool isHookshotting;
     bool isThrowingHookshot;
@@ -53,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
     {
         state = State.Normal;
         hookshotTransform.gameObject.SetActive(false);
+        currentRotation = charachterSprite.transform.eulerAngles;
         
     }
 
@@ -143,11 +145,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKey(KeyCode.A))
         {
-            charachterSprite.transform.eulerAngles = new Vector3(0, -180, 0);
+            charachterSprite.transform.eulerAngles = new Vector3(currentRotation.x, -180, currentRotation.z);
         }
         else
         {
-            charachterSprite.transform.eulerAngles = new Vector3(0, 0, 0);
+            charachterSprite.transform.eulerAngles = new Vector3(currentRotation.x, 0, currentRotation.z);
         }
 
        
