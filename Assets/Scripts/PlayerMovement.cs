@@ -15,11 +15,14 @@ public class PlayerMovement : MonoBehaviour
     public SpriteRenderer charachterSprite;
 
     public Animator animator;
+    public AudioSource augmentAudio;
+    public AudioClip augmentAudioClip;
 
     public float oxygenConsumption = 1;
     public float speed = 12f;
     public float gravity = -50f;
     public float jumpHeight = 2f;
+    public float hookshotThrowSpeed = 100;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
@@ -36,6 +39,8 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 velocity;
     bool isGrounded;
+    bool isHookshotting;
+    bool isThrowingHookshot;
     Vector2 mousePos;
 
     private enum State
@@ -55,19 +60,25 @@ public class PlayerMovement : MonoBehaviour
     {
         Debug.Log(controller.velocity.magnitude);
         IsRunning();
+        IsJumping();
         switch (state)
         {
             default:
             case State.Normal:
                 HandleHookshotStart();
                 HandleCharacterMovement();
+                isHookshotting = false;
+                isThrowingHookshot = false;
                 break;
             case State.HookshotThrown:
                 HandleCharacterMovement();
                 HandleHookshotThrow();
+                isThrowingHookshot = true;
                 break;
             case State.HookshotFlying:
                 HandleHookshotMovement();
+                isHookshotting = true;
+                isThrowingHookshot = false;
                 break;
 
         }
@@ -76,6 +87,8 @@ public class PlayerMovement : MonoBehaviour
 
         //Debug.Log(isGrounded);
         //Debug.Log(characterMomentumVelocity);
+        isFlyingWithGrapple();
+        IsThrowingGrapple();
     }
 
     private void HandleCharacterMovement()
@@ -128,16 +141,14 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        //Vector3 characterScale = charachterSprite.transform.localScale;
-        //if (Input.GetKey(KeyCode.A))
-        //{
-        //    characterScale.x =- charachterSprite.transform.localScale.x;
-        //}
-        //else
-        //{
-        //    characterScale.x =+charachterSprite.transform.localScale.x;
-        //}
-        //transform.localScale = characterScale;
+        if (Input.GetKey(KeyCode.A))
+        {
+            charachterSprite.transform.eulerAngles = new Vector3(0, -180, 0);
+        }
+        else
+        {
+            charachterSprite.transform.eulerAngles = new Vector3(0, 0, 0);
+        }
 
        
 
@@ -166,9 +177,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleHookshotThrow()
     {
+        //augmentAudio.PlayOneShot(augmentAudioClip);
         hookshotTransform.LookAt(hookshotPosition);
-
-        float hookshotThrowSpeed = 100f;
+ 
         hookshotSize += hookshotThrowSpeed * Time.deltaTime;
         hookshotTransform.localScale = new Vector3(1, 1, hookshotSize);
 
@@ -230,7 +241,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool IsRunning()
     {
-        if (controller.velocity.magnitude > 0)
+        if (controller.velocity.magnitude > 0.01)
         {
             animator.SetBool("Is running", true);
             return true;
@@ -242,7 +253,42 @@ public class PlayerMovement : MonoBehaviour
         return false;
     }
 
+    public bool IsJumping()
+    {
+        if (!controller.isGrounded)
+        {
+            animator.SetBool("isJumping", true);
+            return true;
+        }
+        else
+        {
+            animator.SetBool("isJumping", false);
+        }
+        return false;
+    }
 
+    public void IsThrowingGrapple()
+    {
+        if (isThrowingHookshot)
+        {
+            animator.SetBool("isThrowingHookshot", true);
+        }
+        else
+        {
+            animator.SetBool("isThrowingHookshot", false);
+        }
+    }
+    public void isFlyingWithGrapple()
+    {
+        if (isHookshotting)
+        {
+            animator.SetBool("isHookshotting", true);
+        }
+        else
+        {
+            animator.SetBool("isHookshotting", false);
+        }
+    }
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
