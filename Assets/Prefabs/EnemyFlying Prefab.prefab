@@ -645,7 +645,7 @@ MonoBehaviour:
   player: {fileID: 0}
   groundMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 128
   playerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -654,7 +654,7 @@ MonoBehaviour:
     m_Bits: 64
   healthBar: {fileID: 0}
   healthBarScript: {fileID: 0}
-  randomPatrolling: 1
+  randomPatrolling: 0
   isFlyingType: 1
   boxCollider: {fileID: 0}
   randomSeed: 0
