@@ -475,7 +475,7 @@ Light:
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0
-  m_Color: {r: 1, g: 0.9759549, b: 0.9103774, a: 1}
+  m_Color: {r: 0.28235295, g: 0.7686275, b: 0.81568635, a: 1}
   m_Intensity: 24.89
   m_Range: 12.88
   m_SpotAngle: 51.2266
@@ -667,6 +667,7 @@ MonoBehaviour:
   viewMask:
     serializedVersion: 2
     m_Bits: 64
+  detectionTimer: 1
   lerpSpeed: 0.712
   walkPoint: {x: 0, y: 0, z: 0}
   walkPointRange: 5
