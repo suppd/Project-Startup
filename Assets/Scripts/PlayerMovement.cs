@@ -145,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKey(KeyCode.A))
         {
-            charachterSprite.transform.eulerAngles = new Vector3(currentRotation.x, -180, currentRotation.z);
+            charachterSprite.transform.eulerAngles = new Vector3(-currentRotation.x, -180, -currentRotation.z);
         }
         else
         {

@@ -379,6 +379,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6419460368309214059, guid: 4dd3039c130ea63459be0f8aea57d3d9, type: 3}
+      propertyPath: drain
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6419460368309214068, guid: 4dd3039c130ea63459be0f8aea57d3d9, type: 3}
       propertyPath: m_Name
       value: Oxygenzone safe
